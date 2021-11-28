@@ -26,7 +26,7 @@ public class IntroAndRegistration extends WebpageParent {
     }
 
     //    Enter password for signup
-    public void enterPasswordForSignup() {
+    public void inventPassword() {
         sendKeysToElement(By.cssSelector("input[id='valPass']"), "Coding1234");
     }
 
@@ -36,7 +36,7 @@ public class IntroAndRegistration extends WebpageParent {
     }
 
 //    Press signup, will stay commented out until actual testing
-//    public void signUp() {
-//        clickElement(By.cssSelector("span[class='label']"));
-//    }
+    public void signUp() {
+        clickElement(By.cssSelector("span[class='label']"));
+    }
 }

@@ -5,6 +5,12 @@ import org.openqa.selenium.By;
 
 public class Constants {
 
+//    ChromeDriver location
+    public static final String driverLocation = "C:\\Users\\ITAMAR\\IdeaProjects\\chromedriver.exe";
+
+//    Extent Reports location
+    public static final String extentReportsLocation = "C:\\Users\\ITAMAR\\IdeaProjects\\QA Experts\\BuymeAutomated\\report\\extent.html";
+
 //    Image location
     public static final String imageLocation = "C:\\Users\\ITAMAR\\Pictures\\Saved Pictures\\a-show-winning-Silkie.jpg";
 
