@@ -77,7 +77,16 @@ public class Tests {
         return doc.getElementsByTagName(keyName).item(0).getTextContent();
     }
 
+//    ***********************
+//    Start of Intro and Registration Screen Tests
+//    ***********************
+
     @Test
+
+
+//    ***********************
+//    End of Intro and Registration Screen Tests
+//    ***********************
 
     @AfterClass
     public static void tearDown() {
