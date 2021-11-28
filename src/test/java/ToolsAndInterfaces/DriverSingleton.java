@@ -10,7 +10,6 @@ public class DriverSingleton {
             System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
             driver = new ChromeDriver();
         }
-
         return driver;
     }
 }

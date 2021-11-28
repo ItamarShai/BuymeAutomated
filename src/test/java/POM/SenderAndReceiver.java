@@ -34,7 +34,7 @@ public class SenderAndReceiver extends WebpageParent {
 
 //    Clear greeting area
     public void clearGreetingArea() {
-        clearTextFieldElement(By.cssSelector("textarea[rows='4']"));
+        clearTextFieldElement(By.cssSelector("textarea[placeholder=מזל טוב, תודה רבה או פשוט מלא אהבה? כאן כותבים מילים טובות ואיחולים שמחים]"));
     }
 
 //    Enter a greeting
@@ -87,8 +87,8 @@ public class SenderAndReceiver extends WebpageParent {
 
 //    Assert phone numbers for sender and receiver
     public void assertNumbers() {
-        Assert.assertSame(receiverNumber, actualReceiverNumber);
-        Assert.assertSame(senderNumber, actualSenderNumber);
+        Assert.assertEquals(receiverNumber, actualReceiverNumber);
+        Assert.assertEquals(senderNumber, actualSenderNumber);
     }
 
 //    Continue to pay

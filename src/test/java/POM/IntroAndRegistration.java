@@ -11,7 +11,7 @@ public class IntroAndRegistration extends WebpageParent {
     }
 
     //    Press on signup button
-    public void clickOnSignuo() {
+    public void clickOnSignup() {
         clickElement(By.cssSelector("span[class='text-link theme']"));
     }
 

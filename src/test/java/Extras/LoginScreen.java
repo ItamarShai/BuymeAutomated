@@ -1,4 +1,4 @@
-package POM;
+package Extras;
 
 import ToolsAndInterfaces.WebpageParent;
 import org.openqa.selenium.By;

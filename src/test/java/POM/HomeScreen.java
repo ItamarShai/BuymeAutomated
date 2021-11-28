@@ -2,20 +2,11 @@ package POM;
 
 import ToolsAndInterfaces.WebpageParent;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.time.Duration;
-
-import static MainTestArea.Tests.driver;
 
 public class HomeScreen extends WebpageParent {
 
-    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10, 5));
 //    Open price range menu
     public void openPriceRangeMenu() {
-        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector("div[id=ember1014_chosen]")));
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div[id=ember1014_chosen]")));
         clickElement(By.cssSelector("div[id=ember1014_chosen]"));
     }
 

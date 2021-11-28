@@ -12,7 +12,7 @@ public class PickBusiness extends WebpageParent {
     public void assertUrl() {
         String intendedURL = "https://buyme.co.il/search?budget=3&category=22&region=9";
         String actualCurrentURL = driver.getCurrentUrl();
-        Assert.assertSame(intendedURL, actualCurrentURL);
+        Assert.assertEquals(intendedURL, actualCurrentURL);
     }
 
 //    Pick a business

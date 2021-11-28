@@ -11,9 +11,12 @@ import static MainTestArea.Tests.test;
 
 public class WebpageParent implements ITakeScreenshot {
 
+//    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10, 5));
+
 //    Parent method to click an element
     public void clickElement(By locator) {
         try {
+//            wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(String.valueOf(locator))));
             getWebElement(locator).click();
             test.log(Status.PASS, "Passed");
         } catch (NoSuchElementException e){

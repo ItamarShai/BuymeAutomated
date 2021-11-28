@@ -4,13 +4,14 @@ import POM.HomeScreen;
 import POM.IntroAndRegistration;
 import POM.PickBusiness;
 import POM.SenderAndReceiver;
+import ToolsAndInterfaces.DriverSingleton;
+import ToolsAndInterfaces.ITakeScreenshot;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -21,62 +22,47 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
-import static DynamicFiles.Constants.driverLocation;
-import static DynamicFiles.Constants.extentReportsLocation;
+import static DynamicFiles.Constants.XMLfileLocation;
 
 public class Tests {
+
     public static WebDriver driver;
     public static ExtentReports extent= new ExtentReports();
     public static ExtentTest test = extent.createTest("Buyme Automated", "Sanity Tests for Buyme");
 
-
     @BeforeClass
-    public static void BeforeClass() throws Exception {
+    public static void beforeClass() throws Exception {
+
         String type = getData("browserType");
-        if (type.equals("Chrome")) {
-            System.setProperty("webdriver.chrome.driver", driverLocation);
-            driver = new ChromeDriver();
-        } else if (type.equals("FF")){
-            System.setProperty("webdriver.firefox.driver", "Path");
-            driver = new FirefoxDriver();
+        if(type.equals("Chrome")) {
+            try {
+                driver = DriverSingleton.getDriverInstance();
+                test.log(Status.PASS, "Driver established successfully");
+            } catch (Exception e) {
+                test.log(Status.FAIL, "Driver not found");
+                test.info(MediaEntityBuilder.createScreenCaptureFromPath(ITakeScreenshot.takeScreenShot(driver, "picName")).build());
+            }
+        } else {
+            test.log(Status.INFO, "Switch Driver");
         }
-
         driver.get(getData("url"));
+        driver.manage().timeouts().pageLoadTimeout(5, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
         String cwd = System.getProperty("user.dir");
-
-        ExtentSparkReporter htmlReporter = new ExtentSparkReporter(cwd + extentReportsLocation);
+        ExtentSparkReporter htmlReporter = new ExtentSparkReporter(cwd + "\\extent.html");
         extent.attachReporter(htmlReporter);
-
-        extent = new ExtentReports();
-
-        test = extent.createTest("BuymeAutomated Tests", "Buyme Sanity Tests");
-
-        // log results
-        test.log(Status.INFO, "@Before class");
-        try {
-            System.setProperty("webdriver.chrome.driver", driverLocation);
-            driver = new ChromeDriver();
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            test.log(Status.PASS, "Driver established successfully");
-        } catch (Exception e) {
-            e.printStackTrace();
-            test.log(Status.FAIL, "Driver connection failed! " + e.getMessage());
-            throw new Exception("Driver failed");
-        }
-
-        driver.get(getData("url"));
     }
 
     private static String getData (String keyName) throws Exception{
-        ClassLoader classLoader = Tests.class.getClassLoader();
-        String xmlFilePath = String.valueOf(new File(classLoader.getResource("data.xml").getFile()));
-        File fXmlFile = new File(xmlFilePath);
+        File fXmlFile = new File(XMLfileLocation);
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(fXmlFile);
         doc.getDocumentElement().normalize();
         return doc.getElementsByTagName(keyName).item(0).getTextContent();
     }
+
 
 //    ***********************
 //    Start of Intro and Registration Screen Tests
@@ -91,7 +77,7 @@ public class Tests {
     @Test (priority = 2)
     public void signupButtonTest() {
         IntroAndRegistration signupButton = new IntroAndRegistration();
-        signupButton.clickOnSignuo();
+        signupButton.clickOnSignup();
     }
 
     @Test (priority = 3)
@@ -118,92 +104,60 @@ public class Tests {
         confirmSU.confirmPassword();
     }
 
-//    Press signup, will stay commented out until actual testing
+//    Press signup*
+//    *will stay commented out until actual testing
 
-//    @Test (priority = 7)
-//    public void signUpToBuyme() {
-//        IntroAndRegistration signUpSU = new IntroAndRegistration();
-//        signUpSU.signUp();
-//    }
+    @Test (priority = 7)
+    public void signUpToBuyme() {
+        IntroAndRegistration signUpSU = new IntroAndRegistration();
+        signUpSU.signUp();
+    }
 
 //    ***********************
 //    End of Intro and Registration Screen Tests
 //    ***********************
 
 //    ***********************
-//    Start of Login Screen Tests
-//    note: not in the SRS, but exists to test login process if needed
-//    ***********************
-//
-//    @Test
-//    public void loginButtonTestForLogin() {
-//        IntroAndRegistration loginButtonForLogin = new IntroAndRegistration();
-//        loginButtonForLogin.clickOnLogin();
-//    }
-//
-//    @Test
-//    public void enterLoginEmail() {
-//        LoginScreen enterEmailForLogin = new LoginScreen();
-//        enterEmailForLogin.enterLoginEmail();
-//    }
-//
-//    @Test
-//    public void enterLoginPassword() {
-//        LoginScreen enterPasswordForLogin = new LoginScreen();
-//        enterPasswordForLogin.enterLoginPassword();
-//    }
-//
-//    @Test
-//    public void enterBuymeAsUser() {
-//        LoginScreen enterBuyme = new LoginScreen();
-//        enterBuyme.clickEnterBuyme();
-//    }
-//
-//    ***********************
-//    End of Login Screen Tests
-//    ***********************
-
-//    ***********************
 //    Start of Home Screen Tests
 //    ***********************
 
-    @Test (priority = 7)
-    public void priceRangeMenuTest() {
-        HomeScreen priceRangeDDMopen = new HomeScreen();
-        priceRangeDDMopen.openPriceRangeMenu();
-    }
-
     @Test (priority = 8)
-    public void pickPriceRangeTest() {
-        HomeScreen priceRangeDDMclick = new HomeScreen();
-        priceRangeDDMclick.pickPriceRange();
+    public void priceRangeMenuTest() {
+        HomeScreen priceRangeDDMOpen = new HomeScreen();
+        priceRangeDDMOpen.openPriceRangeMenu();
     }
 
     @Test (priority = 9)
-    public void regionMenuTest() {
-        HomeScreen regionMenuDDMopen = new HomeScreen();
-        regionMenuDDMopen.openRegionMenu();
+    public void pickPriceRangeTest() {
+        HomeScreen priceRangeDDMClick = new HomeScreen();
+        priceRangeDDMClick.pickPriceRange();
     }
 
     @Test (priority = 10)
-    public void pickRegionTest() {
-        HomeScreen regionMenuDDMclick = new HomeScreen();
-        regionMenuDDMclick.pickRegion();
+    public void regionMenuTest() {
+        HomeScreen regionMenuDDMOpen = new HomeScreen();
+        regionMenuDDMOpen.openRegionMenu();
     }
 
     @Test (priority = 11)
-    public void categoryMenuTest() {
-        HomeScreen categoryMenuDDMopen = new HomeScreen();
-        categoryMenuDDMopen.openCategoryMenu();
+    public void pickRegionTest() {
+        HomeScreen regionMenuDDMClick = new HomeScreen();
+        regionMenuDDMClick.pickRegion();
     }
 
     @Test (priority = 12)
-    public void pickCategoryTest() {
-        HomeScreen categoryMenuDDMclick = new HomeScreen();
-        categoryMenuDDMclick.pickCategory();
+    public void categoryMenuTest() {
+        HomeScreen categoryMenuDDMOpen = new HomeScreen();
+        categoryMenuDDMOpen.openCategoryMenu();
     }
 
     @Test (priority = 13)
+    public void pickCategoryTest() {
+        HomeScreen categoryMenuDDMClick = new HomeScreen();
+        categoryMenuDDMClick.pickCategory();
+    }
+
+    @Test (priority = 14)
     public void findGiftButtonTest() {
         HomeScreen pressFindNewGift = new HomeScreen();
         pressFindNewGift.findNewGift();
@@ -216,25 +170,25 @@ public class Tests {
 //    Start of Pick Business Screen Tests
 //    ***********************
 
-    @Test (priority = 14)
-    public void assertURLtest() {
+    @Test (priority = 15)
+    public void assertURLTest() {
         PickBusiness assertingURL = new PickBusiness();
         assertingURL.assertUrl();
     }
 
-    @Test (priority = 15)
+    @Test (priority = 16)
     public void pickBusinessTest() {
         PickBusiness pickingBusiness = new PickBusiness();
         pickingBusiness.pickBusiness();
     }
 
-    @Test (priority = 16)
+    @Test (priority = 17)
     public void enterAmountTest() {
         PickBusiness enteringAmount = new PickBusiness();
         enteringAmount.enterAmount();
     }
 
-    @Test (priority = 17)
+    @Test (priority = 18)
     public void chooseAmountTest() {
         PickBusiness choosingAmount = new PickBusiness();
         choosingAmount.chooseAmount();
@@ -250,49 +204,49 @@ public class Tests {
 
 //    Start of first page of screen
 
-    @Test (priority = 18)
+    @Test (priority = 19)
     public void chooseToSomeoneElseTest() {
         SenderAndReceiver chooseSomeoneElse = new SenderAndReceiver();
         chooseSomeoneElse.toSomeoneElse();
     }
 
-    @Test (priority = 19)
+    @Test (priority = 20)
     public void enterReceiverNameTest() {
         SenderAndReceiver enterNameForReceiver = new SenderAndReceiver();
         enterNameForReceiver.enterReceiverName();
     }
 
-    @Test (priority = 20)
+    @Test (priority = 21)
     public void openEventListTest() {
         SenderAndReceiver openTheEventList= new SenderAndReceiver();
         openTheEventList.openEventList();
     }
 
-    @Test (priority = 21)
+    @Test (priority = 22)
     public void pickEventTest() {
         SenderAndReceiver pickAnEvent = new SenderAndReceiver();
         pickAnEvent.pickEvent();
     }
 
-    @Test (priority = 22)
+    @Test (priority = 23)
     public void clearGreetingAreaTest() {
         SenderAndReceiver clearTextAreaGreeting = new SenderAndReceiver();
         clearTextAreaGreeting.clearGreetingArea();
     }
 
-    @Test (priority = 23)
+    @Test (priority = 24)
     public void enterGreetingTest() {
         SenderAndReceiver writeGreeting= new SenderAndReceiver();
         writeGreeting.enterGreeting();
     }
 
-    @Test (priority = 24)
+    @Test (priority = 25)
     public void uploadImageTest() {
         SenderAndReceiver uploadAnImage = new SenderAndReceiver();
         uploadAnImage.uploadImage();
     }
 
-    @Test (priority = 25)
+    @Test (priority = 26)
     public void continueToSecondScreenTest() {
         SenderAndReceiver pressToContinue= new SenderAndReceiver();
         pressToContinue.pressContinue();
@@ -301,43 +255,43 @@ public class Tests {
 //    End of first page of screen
 //    Start of second page of screen
 
-    @Test (priority = 26)
+    @Test (priority = 27)
     public void chooseToSendNowTest() {
         SenderAndReceiver sendTheGiftNow = new SenderAndReceiver();
         sendTheGiftNow.pressNow();
     }
 
-    @Test (priority = 27)
-    public void sendViaSMStest() {
+    @Test (priority = 28)
+    public void sendViaSMSTest() {
         SenderAndReceiver chooseToSendViaSMS = new SenderAndReceiver();
         chooseToSendViaSMS.chooseSMS();
     }
 
-    @Test (priority = 28)
+    @Test (priority = 29)
     public void enterReceiverNumberTest() {
         SenderAndReceiver enterReceiverPhoneNumber = new SenderAndReceiver();
         enterReceiverPhoneNumber.enterReceiverPhone();
     }
 
-    @Test (priority = 29)
+    @Test (priority = 30)
     public void enterSenderNameTest() {
         SenderAndReceiver enterTheSenderName = new SenderAndReceiver();
         enterTheSenderName.enterSenderName();
     }
 
-    @Test (priority = 30)
+    @Test (priority = 31)
     public void enterSenderNumberTest() {
         SenderAndReceiver enterSenderPhoneNumber = new SenderAndReceiver();
         enterSenderPhoneNumber.enterSenderPhone();
     }
 
-    @Test (priority = 31)
+    @Test (priority = 32)
     public void assertPhoneNumbersTest() {
         SenderAndReceiver assertTheNumbers = new SenderAndReceiver();
         assertTheNumbers.assertNumbers();
     }
 
-    @Test (priority = 32)
+    @Test (priority = 33)
     public void continueToPaymentPageTest() {
         SenderAndReceiver pressContinueToPaymentPage = new SenderAndReceiver();
         pressContinueToPaymentPage.pressContinueToPay();
