@@ -11,7 +11,7 @@ public class Constants {
 //    Extent Reports location
     public static final String extentReportsLocation = "C:\\Users\\ITAMAR\\IdeaProjects\\QA Experts\\BuymeAutomated\\report\\extent.html";
 
-//    Image location
+//    Image for upload location
     public static final String imageLocation = "C:\\Users\\ITAMAR\\Pictures\\Saved Pictures\\a-show-winning-Silkie.jpg";
 
 //    Intended Receiver phone number

@@ -8,9 +8,6 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
-import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -22,21 +19,19 @@ import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import static DynamicFiles.Constants.driverLocation;
 import static DynamicFiles.Constants.extentReportsLocation;
 
 public class Tests {
-
     public static WebDriver driver;
-    private static ExtentReports extent;
-    private static ExtentTest test;
+    public static ExtentReports extent= new ExtentReports();
+    public static ExtentTest test = extent.createTest("Buyme Automated", "Sanity Tests for Buyme");
 
 
     @BeforeClass
-    public static void runOnceBeforeClass() throws Exception {
+    public static void BeforeClass() throws Exception {
         String type = getData("browserType");
         if (type.equals("Chrome")) {
             System.setProperty("webdriver.chrome.driver", driverLocation);
@@ -45,15 +40,15 @@ public class Tests {
             System.setProperty("webdriver.firefox.driver", "Path");
             driver = new FirefoxDriver();
         }
+
         driver.get(getData("url"));
         String cwd = System.getProperty("user.dir");
-        ExtentSparkReporter htmlReporter = new ExtentSparkReporter(cwd + extentReportsLocation);
 
-        // attach reporter
-        extent = new ExtentReports();
+        ExtentSparkReporter htmlReporter = new ExtentSparkReporter(cwd + extentReportsLocation);
         extent.attachReporter(htmlReporter);
 
-        // name your test and add description
+        extent = new ExtentReports();
+
         test = extent.createTest("BuymeAutomated Tests", "Buyme Sanity Tests");
 
         // log results
@@ -353,17 +348,5 @@ public class Tests {
         test.log(Status.INFO, "@After test " + "After test method");
         driver.quit();
         extent.flush();
-    }
-
-    private static String takeScreenShot(String ImagesPath) {
-        TakesScreenshot takesScreenshot = (TakesScreenshot) driver;
-        File screenShotFile = takesScreenshot.getScreenshotAs(OutputType.FILE);
-        File destinationFile = new File(ImagesPath + ".png");
-        try {
-            FileUtils.copyFile(screenShotFile, destinationFile);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        return ImagesPath + ".png";
     }
 }
